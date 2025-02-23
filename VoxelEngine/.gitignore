@@ -36,3 +36,5 @@ Thumbs.db
 #Specific Folders
 Dependencies
 x64
+.vs
+.db
