@@ -4,11 +4,17 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include "Constants.h"
+#include "Utils.h"
 
 
 static SDL_Window* window = NULL;
 static SDL_GLContext glcontext;
 //static SDL_Renderer* renderer = NULL;
+
+void cleanup() {
+    //TODO:
+    SDL_DestroyWindow(window);
+}
 
 void pre_draw() {
     /*glClearColor(0, 0, 0, 1);
@@ -30,26 +36,40 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[]) {
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-
-    if (!SDL_CreateWindow("test", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)) {
-        SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
+    
+    window = SDL_CreateWindow("test", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    if (window == NULL) {
+        SDL_Log("Couldn't create window and renderer: %s \n", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 
     glcontext = SDL_GL_CreateContext(window);
+    
+    if (glcontext == NULL) {
+        printf("Couldn't create OpenGL context: %s \n", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
+    if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+        printf("Failed to load GL loader \n");
+        return SDL_APP_FAILURE;
+    }
+
     //render stuff
     pre_draw();
     draw();
     //and draw it to the screen
     SDL_GL_SwapWindow(window);
 
+    get_OpenGL_version_info();
+    
     return SDL_APP_CONTINUE;
 }
 
 /* This function runs when a new event (mouse input, keypresses, etc) occurs. */
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
-    if (event->type == SDL_EVENT_KEY_DOWN ||
-        event->type == SDL_EVENT_QUIT) {
+    if (event->type == SDL_EVENT_QUIT) {
+        cleanup();
         return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
     }
     return SDL_APP_CONTINUE;
