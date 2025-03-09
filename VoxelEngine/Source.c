@@ -27,7 +27,7 @@ const char* vShaderSource =
 const char* fShaderSource =
 "#version 410\n"
 "out vec4 color;"
-"void main() {color = vec4(1.0, 0.5, 0.0, 1.0);}";
+"void main() {color = vec4(0.9, 0.5, 0.1, 1.0);}";
 
 //-------------------------------------------------------------------------------------------------------------
 void cleanup() {
@@ -110,7 +110,9 @@ void pre_draw() {
     glDisable(GL_CULL_FACE);
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+    glClearColor(0.1f, 0.7f, 0.5f, 1.0f);
+
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glUseProgram(gGraphicsPipelineShaderProgram);
 }
